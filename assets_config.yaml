@@ -1,0 +1,51 @@
+# Asset sources. `python preprocess_assets.py --config assets_config.yaml` merges
+# them into one index, which is all render_scene.py reads.
+version: 1
+output: ${SAPIEN_ASSETS_ROOT}/assets_index.json
+
+# Asset ids to keep out of the index. The released build excludes the
+# PartNet-Mobility instances that appear in the iTACO evaluation set, so that
+# training data and that benchmark share no object instance.
+exclude: excluded_assets.json
+
+hdri:
+  dir: ${SAPIEN_ASSETS_ROOT}/hdri
+
+sources:
+  - name: partnet
+    kind: articulated
+    dir: ${SAPIEN_ASSETS_ROOT}/partnet_mobility/dataset
+    layout: urdf_tree          # <id>/mobility.urdf | model.urdf | lone *.urdf, nested ok
+    scale_policy: none         # native scale; scene/camera params are tuned to PartNet size
+    max_assets: 1200           # balance the per-source pools (~1000-1200 each)
+    weight: 1.0
+
+  - name: infinigen
+    kind: articulated
+    dir: ${SAPIEN_ASSETS_ROOT}/infinigen_articulated
+    layout: urdf_tree          # <category>/<id>/<category>.urdf (two levels)
+    scale_policy: normalize    # per-spawn random target AABB diagonal
+    target_diag: [1.0, 2.5]
+    max_assets: 1200           # evenly-strided cap across sorted ids (keeps category spread)
+    weight: 0.5
+
+  - name: articraft
+    kind: articulated
+    dir: ${SAPIEN_ASSETS_ROOT}/articraft
+    layout: urdf_tree          # <category>__<record_id>/model.urdf
+    scale_policy: normalize
+    target_diag: [1.0, 2.5]
+    weight: 0.5
+
+  - name: gso
+    kind: rigid
+    dir: ${SAPIEN_ASSETS_ROOT}/gso_assets
+    layout: rigid
+    scale_policy: normalize
+    weight: 1.0
+
+# Per-scene articulated-source mix (consumed by generation via index meta):
+source_mix:
+  mode: varied                 # fixed = always the weights above; varied = per-scene jitter
+  p_single_source: 0.15        # prob. a scene draws ALL articulated objects from one source
+  dirichlet_concentration: 8.0 # jitter around normalized weights (higher = milder)

@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+logs/
+*.out
+*.err
+# generated asset indexes
+assets_index*.json
+*.bad.json
