@@ -67,8 +67,8 @@ See the [dataset card](https://huggingface.co/datasets/mose3-tracker/Art-Kubric)
 
 ```bibtex
 @inproceedings{cheng2026mose3,
-  title     = {MoSE3: Learning World-Space SE(3) at Every Pixel},
-  author    = {Cheng, Joanna Jiahuan and Li, Zhiyi and Xia, Tian and
+  title     = {{MoSE3}: Learning World-Space {SE(3)} at Every Pixel},
+  author    = {Cheng, Jiahuan and Li, Zhiyi and Xia, Tian and
                Cai, Ruojin and Du, Yilun and Wang, Qianqian},
   booktitle = {Advances in Neural Information Processing Systems (NeurIPS)},
   year      = {2026}
